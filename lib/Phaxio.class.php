@@ -1,6 +1,6 @@
 <?php
 
-class PhaxioHelper {
+class Phaxio {
 
     private $debug = false;
     private $api_key = null;
@@ -14,7 +14,7 @@ class PhaxioHelper {
     }
 
     public function faxStatus($faxId) {
-        if (!$faxId) throw new PhaxioHelperException("You must include a fax id. ");
+        if (!$faxId) throw new PhaxioException("You must include a fax id. ");
 
         $params = array('id' => $faxId);
 
@@ -26,9 +26,9 @@ class PhaxioHelper {
         if (!is_array($filenames)) $filenames = array($filenames);
 
         if (!$to)
-            throw new PhaxioHelperException("You must include a 'to' number. ");
+            throw new PhaxioException("You must include a 'to' number. ");
         else if (count($filenames) == 0 && !$options['string_data'])
-            throw new PhaxioHelperException("You must include a file to send.");
+            throw new PhaxioException("You must include a file to send.");
 
         $params = array();
 
@@ -43,7 +43,7 @@ class PhaxioHelper {
         $i = 0;
         foreach ($filenames as $filename) {
             if (!file_exists($filename)) {
-                throw new PhaxioHelperException("The file '$filename' does not exist.");
+                throw new PhaxioException("The file '$filename' does not exist.");
             }
             $params["filename[$i]"] = "@$filename";
             $i++;
@@ -60,7 +60,7 @@ class PhaxioHelper {
 
     public function fireBatch($batchId) {
         if (!$batchId)
-            throw new PhaxioHelperException("You must provide a batchId.");
+            throw new PhaxioException("You must provide a batchId.");
         $params = array('id' => $batchId);
         $result = $this->doRequest($this->host . "fireBatch", $params);
         return $result;
@@ -68,7 +68,7 @@ class PhaxioHelper {
 
     public function closeBatch($batchId) {
         if (!$batchId)
-            throw new PhaxioHelperException("You must provide a batchId.");
+            throw new PhaxioException("You must provide a batchId.");
         $params = array('id' => $batchId);
         $result = $this->doRequest($this->host . "closeBatch", $params);
         return $result;
@@ -204,7 +204,7 @@ class PhaxioHelper {
 
 }
 
-class PhaxioHelperException extends Exception {}
+class PhaxioException extends Exception {}
 
 class PhaxioOperationResult {
 

@@ -1,8 +1,8 @@
 <?
 require_once('phaxio_config.php');
-require_once(dirname(__FILE__) . '/../lib/PhaxioHelper.class.php');
+require_once(dirname(__FILE__) . '/../lib/Phaxio.class.php');
 
-$phaxio = new PhaxioHelper($apiKeys[$apiMode], $apiSecrets[$apiMode], $apiHost);
+$phaxio = new Phaxio($apiKeys[$apiMode], $apiSecrets[$apiMode], $apiHost);
 
 echo "Creating a 3 part batch with a one minute delay...\n";
 for ($i = 1; $i <= 3; $i++){
