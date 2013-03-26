@@ -1,6 +1,9 @@
-<?
+<?php
+
 require_once('phaxio_config.php');
-require_once(dirname(__FILE__) . '/../lib/Phaxio.class.php');
+require_once('autoload.php');
+
+use Phaxio\Phaxio;
 
 $phaxio = new Phaxio($apiKeys[$apiMode], $apiSecrets[$apiMode], $apiHost);
 
@@ -10,6 +13,3 @@ for ($i = 1; $i <= 5; $i++){
 }
 
 echo "Your batch has been created for $toNumber.  You can now see it in the Phaxio web UI.  To fire it, see fireBatch.php";
-
-?>
-
