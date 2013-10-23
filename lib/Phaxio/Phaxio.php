@@ -1,20 +1,28 @@
 <?php
 
-class Phaxio {
+namespace Phaxio;
 
+class Phaxio
+{
     private $debug = false;
     private $api_key = null;
     private $api_secret = null;
     private $host = "https://api.phaxio.com/v1/";
 
-    public function __construct($api_key = null, $api_secret = null, $host = null) {
+    public function __construct($api_key = null, $api_secret = null, $host = null)
+    {
         $this->api_key = $api_key ? $api_key : $this->getApiKey();
         $this->api_secret = $api_secret ? $api_secret : $this->getApiSecret();
-        if ($host != null) $this->host = $host;
+        if ($host != null) {
+            $this->host = $host;
+        }
     }
 
-    public function faxStatus($faxId) {
-        if (!$faxId) throw new PhaxioException("You must include a fax id. ");
+    public function faxStatus($faxId)
+    {
+        if (! $faxId) {
+            throw new PhaxioException("You must include a fax id. ");
+        }
 
         $params = array('id' => $faxId);
 
@@ -22,13 +30,17 @@ class Phaxio {
         return $result;
     }
 
-    public function sendFax($to, $filenames = array(), $options = array()) {
-        if (!is_array($filenames)) $filenames = array($filenames);
+    public function sendFax($to, $filenames = array(), $options = array())
+    {
+        if (! is_array($filenames)) {
+            $filenames = array($filenames);
+        }
 
-        if (!$to)
+        if (!$to) {
             throw new PhaxioException("You must include a 'to' number. ");
-        else if (count($filenames) == 0 && !$options['string_data'])
+        } elseif (count($filenames) == 0 && !$options['string_data']) {
             throw new PhaxioException("You must include a file to send.");
+        }
 
         $params = array();
 
@@ -42,108 +54,127 @@ class Phaxio {
 
         $i = 0;
         foreach ($filenames as $filename) {
-            if (!file_exists($filename)) {
+            if (! file_exists($filename)) {
                 throw new PhaxioException("The file '$filename' does not exist.");
             }
             $params["filename[$i]"] = "@$filename";
             $i++;
         }
 
-
-        $this->paramsCopy(array(
-            'string_data', 'string_data_type', 'batch', 'batch_delay', 'callback_url'
-        ), $options, $params);
+        $this->paramsCopy(
+            array('string_data', 'string_data_type', 'batch', 'batch_delay', 'callback_url'),
+            $options,
+            $params
+        );
 
         $result = $this->doRequest($this->host . "send", $params);
+
         return $result;
     }
 
-    public function fireBatch($batchId) {
-        if (!$batchId)
+    public function fireBatch($batchId)
+    {
+        if (! $batchId) {
             throw new PhaxioException("You must provide a batchId.");
+        }
+
         $params = array('id' => $batchId);
         $result = $this->doRequest($this->host . "fireBatch", $params);
+
         return $result;
     }
 
-    public function closeBatch($batchId) {
-        if (!$batchId)
+    public function closeBatch($batchId)
+    {
+        if (! $batchId) {
             throw new PhaxioException("You must provide a batchId.");
+        }
+
         $params = array('id' => $batchId);
         $result = $this->doRequest($this->host . "closeBatch", $params);
+
         return $result;
     }
 
-    public function getApiKey() {
+    public function getApiKey()
+    {
         return $this->api_key;
     }
 
-    public function getApiSecret() {
+    public function getApiSecret()
+    {
         return $this->api_secret;
     }
 
-    private function doRequest($address, $params, $wrapInPhaxioOperationResult = true) {
+    private function doRequest($address, $params, $wrapInPhaxioOperationResult = true)
+    {
         $ch = curl_init($address);
 
         $params['api_key'] = $this->getApiKey();
         $params['api_secret'] = $this->getApiSecret();
 
-        if ($this->debug){
+        if ($this->debug) {
             echo "Request address: \n\n $address?" . http_build_query($params) . "\n\n";
         }
 
         $result = $this->curlPost($address, $params, false);
 
-        if ($this->debug){
+        if ($this->debug) {
             echo "Response: \n\n";
             var_dump($result);
             echo "\n\n";
         }
 
-        if ($wrapInPhaxioOperationResult){
+        if ($wrapInPhaxioOperationResult) {
             $result = json_decode($result, true);
 
-            if (!$result){
+            if (! $result) {
                 $opResult = new PhaxioOperationResult(false, "No data received from service.");
-            }
-            else {
+            } else {
                 $opResult = new PhaxioOperationResult($result['success'], $result['message'], $result['data']);
             }
+
             return $opResult;
-        }
-        else {
+        } else {
             return $result;
         }
     }
 
-    private function curlPost($host, $params = array(), $async = false){
+    private function curlPost($host, $params = array(), $async = false)
+    {
         $handle = curl_init($host);
         curl_setopt($handle, CURLOPT_POST, true);
 
-        if ($async){
+        if ($async) {
             curl_setopt($handle, CURLOPT_TIMEOUT, 1);
-        }
-        else {
+        } else {
             curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
         }
 
-        $this->curl_setopt_custom_postfields($handle, $params);
+        $this->curlSetoptCustomPostfields($handle, $params);
         $result = curl_exec($handle);
 
-        if($result === false)
-            throw new Exception('Curl error: ' . curl_error($handle));
+        if ($result === false) {
+            throw new PhaxioException('Curl error: ' . curl_error($handle));
+        }
 
         return $result;
     }
 
-    private function paramsCopy($names, $options, &$params){
-        foreach($names as $name)
-            if (isset($options[$name])) $params[$name] = $options[$name];
+    private function paramsCopy($names, $options, &$params)
+    {
+        foreach ($names as $name) {
+            if (isset($options[$name])) {
+                $params[$name] = $options[$name];
+            }
+        }
     }
 
-    private function curl_setopt_custom_postfields($ch, $postfields, $headers = null) {
+    private function curlSetoptCustomPostfields($ch, $postfields, $headers = null)
+    {
         $algos = hash_algos();
         $hashAlgo = null;
+
         foreach (array('sha1', 'md5') as $preferred) {
             if (in_array($preferred, $algos)) {
                 $hashAlgo = $preferred;
@@ -192,48 +223,16 @@ class Phaxio {
         $content = join($crlf, $body);
         $contentLength = strlen($content);
 
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Length: ' . $contentLength,
-            'Expect: 100-continue',
-            'Content-Type: ' . $contentType,
-        ));
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                'Content-Length: ' . $contentLength,
+                'Expect: 100-continue',
+                'Content-Type: ' . $contentType,
+            )
+        );
 
         curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
     }
-
-
 }
-
-class PhaxioException extends Exception {}
-
-class PhaxioOperationResult {
-
-    private $message = null;
-    private $success = false;
-    private $data = null;
-
-    public function __construct($success, $message = null, $data = null){
-        $this->success = $success;
-        $this->message = $message;
-
-        if ($data != null){
-            $this->data = $data;
-        }
-        
-    }
-
-    public function succeeded() {
-        return $this->success;
-    }
-
-    public function getData() {
-        return $this->data;
-    }
-
-    public function getMessage() {
-        return $this->message;
-    }
-
-}
-
-?>
