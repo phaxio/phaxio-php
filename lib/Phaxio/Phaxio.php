@@ -18,6 +18,29 @@ class Phaxio
         }
     }
 
+    public function faxList($startTimestamp, $endTimestamp, $options = array()){
+        if (!$startTimestamp || !$endTimestamp) {
+            throw new PhaxioException("You must provide a start and end timestamp. ");
+        }
+
+        $params = array('start' => $startTimestamp, 'end' => $endTimestamp);
+
+        $this->paramsCopy(
+            array('maxperpage', 'page', 'number'),
+            $options,
+            $params
+        );
+
+        if (is_array($options['tags'])){
+            foreach($options['tags'] as $name => $value){
+                $params["tag[$name]"] = $value;
+            }
+        }
+
+        $result = $this->doRequest($this->host . "faxList", $params);
+        return $result;
+    }
+
     public function faxStatus($faxId)
     {
         if (! $faxId) {
@@ -132,6 +155,10 @@ class Phaxio
                 $opResult = new PhaxioOperationResult(false, "No data received from service.");
             } else {
                 $opResult = new PhaxioOperationResult($result['success'], $result['message'], $result['data']);
+
+                if ($result['paging']){
+                    $opResult->addPagingData($result['paging']);
+                }
             }
 
             return $opResult;
