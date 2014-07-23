@@ -18,6 +18,11 @@ class Phaxio
         }
     }
 
+    public function accountStatus() {
+        $result = $this->doRequest($this->host . "accountStatus");
+        return $result;
+    }
+
     public function faxList($startTimestamp, $endTimestamp, $options = array()){
         if (!$startTimestamp || !$endTimestamp) {
             throw new PhaxioException("You must provide a start and end timestamp. ");
@@ -53,6 +58,15 @@ class Phaxio
         return $result;
     }
 
+    public function resendFax($faxId) {
+        if (!$faxId) throw new PhaxioException("You must include a fax id. ");
+
+        $params = array('id' => $faxId);
+
+        $result = $this->doRequest($this->host . "resendFax", $params);
+        return $result;
+    }
+
     public function sendFax($to, $filenames = array(), $options = array())
     {
         if (! is_array($filenames)) {
@@ -85,10 +99,16 @@ class Phaxio
         }
 
         $this->paramsCopy(
-            array('string_data', 'string_data_type', 'batch', 'batch_delay', 'callback_url'),
+            array('string_data', 'string_data_type', 'batch', 'batch_delay', 'batch_collision_avoidance', 'callback_url', 'caller_id', 'cancel_timeout','header_text'),
             $options,
             $params
         );
+
+        if ($options['tags']){
+            foreach($options['tags'] as $name => $value){
+                $params["tag[$name]"] = $value;
+            }
+        }
 
         $result = $this->doRequest($this->host . "send", $params);
 
@@ -119,6 +139,51 @@ class Phaxio
         return $result;
     }
 
+    // PHONE NUMBERS
+
+    public function provisionNumber($areaCode, $callbackUrl = null){
+        $params = array('area_code' => $areaCode);
+
+        if ($callbackUrl) $params['callback_url'] = $callbackUrl;
+        return $this->doRequest($this->host . "provisionNumber", $params);
+    }
+
+    public function releaseNumber($phoneNumber){
+        $params = array('number' => $phoneNumber);
+        return $this->doRequest($this->host . "releaseNumber", $params);
+    }
+
+    public function listNumbers($options){
+        $params = array();
+
+        $this->paramsCopy(
+            array('area_code', 'number'),
+            $options,
+            $params
+        );
+
+        return $this->doRequest($this->host . "numberList", $params);
+    }
+
+    public function getAvailableAreaCodes($options){
+        $params = array();
+
+        $this->paramsCopy(
+            array('is_toll_free', 'state'),
+            $options,
+            $params
+        );
+
+        return $this->doRequest($this->host . "areaCodes", $params);
+    }
+
+
+    public function getSupportedCountries($options){
+        return $this->doRequest($this->host . "supportedCountries");
+    }
+
+
+
     public function getApiKey()
     {
         return $this->api_key;
@@ -129,7 +194,7 @@ class Phaxio
         return $this->api_secret;
     }
 
-    private function doRequest($address, $params, $wrapInPhaxioOperationResult = true)
+    private function doRequest($address, $params = array(), $wrapInPhaxioOperationResult = true)
     {
         $ch = curl_init($address);
 
