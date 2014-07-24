@@ -115,30 +115,6 @@ class Phaxio
         return $result;
     }
 
-    public function fireBatch($batchId)
-    {
-        if (! $batchId) {
-            throw new PhaxioException("You must provide a batchId.");
-        }
-
-        $params = array('id' => $batchId);
-        $result = $this->doRequest($this->host . "fireBatch", $params);
-
-        return $result;
-    }
-
-    public function closeBatch($batchId)
-    {
-        if (! $batchId) {
-            throw new PhaxioException("You must provide a batchId.");
-        }
-
-        $params = array('id' => $batchId);
-        $result = $this->doRequest($this->host . "closeBatch", $params);
-
-        return $result;
-    }
-
     // PHONE NUMBERS
 
     public function provisionNumber($areaCode, $callbackUrl = null){
@@ -153,7 +129,7 @@ class Phaxio
         return $this->doRequest($this->host . "releaseNumber", $params);
     }
 
-    public function listNumbers($options){
+    public function listNumbers($options = array()){
         $params = array();
 
         $this->paramsCopy(
@@ -165,7 +141,7 @@ class Phaxio
         return $this->doRequest($this->host . "numberList", $params);
     }
 
-    public function getAvailableAreaCodes($options){
+    public function getAvailableAreaCodes($options = array()){
         $params = array();
 
         $this->paramsCopy(
@@ -178,7 +154,7 @@ class Phaxio
     }
 
 
-    public function getSupportedCountries($options){
+    public function getSupportedCountries(){
         return $this->doRequest($this->host . "supportedCountries");
     }
 
