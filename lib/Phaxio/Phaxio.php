@@ -104,7 +104,7 @@ class Phaxio
             $params
         );
 
-        if ($options['tags']){
+        if (isset($options['tags']) && $options['tags']){
             foreach($options['tags'] as $name => $value){
                 $params["tag[$name]"] = $value;
             }
@@ -197,7 +197,7 @@ class Phaxio
             } else {
                 $opResult = new PhaxioOperationResult($result['success'], $result['message'], $result['data']);
 
-                if ($result['paging']){
+                if (isset($result['paging']) && $result['paging']){
                     $opResult->addPagingData($result['paging']);
                 }
             }
