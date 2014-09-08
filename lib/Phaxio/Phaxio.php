@@ -9,12 +9,44 @@ class Phaxio
     private $api_secret = null;
     private $host = "https://api.phaxio.com/v1/";
 
+    const THUMBNAIL_LARGE = 'l';
+    const THUMBNAIL_SMALL = 's';
+    const PDF = 'p';
+
     public function __construct($api_key = null, $api_secret = null, $host = null)
     {
         $this->api_key = $api_key ? $api_key : $this->getApiKey();
         $this->api_secret = $api_secret ? $api_secret : $this->getApiSecret();
         if ($host != null) {
             $this->host = $host;
+        }
+    }
+
+    public function download($faxId, $fileType = null, $outfile = null){
+        $params = array();
+        $params['id'] = $faxId;
+
+        if ($fileType){
+            $params['type'] = $fileType;
+        }
+
+        $result = $this->doRequest($this->host . "faxFile", $params, false);
+
+        if (array_search($result['contentType'], array('application/pdf', 'image/jpeg')) === false){
+            if ($result['status'] == 404){
+                throw new PhaxioException($result['body']);
+            }
+            $json = json_decode($result['body'], true);
+            throw new PhaxioException(isset($json['message']) ? $json['message'] : "No data returned from service.");
+        }
+        else {
+            if ($outfile){
+                file_put_contents($outfile, $result['body']);
+                return true;
+            }
+            else {
+                return $result['body'];
+            }
         }
     }
 
@@ -172,8 +204,6 @@ class Phaxio
 
     private function doRequest($address, $params = array(), $wrapInPhaxioOperationResult = true)
     {
-        $ch = curl_init($address);
-
         $params['api_key'] = $this->getApiKey();
         $params['api_secret'] = $this->getApiSecret();
 
@@ -190,12 +220,12 @@ class Phaxio
         }
 
         if ($wrapInPhaxioOperationResult) {
-            $result = json_decode($result, true);
+            $result = json_decode($result['body'], true);
 
             if (! $result) {
                 $opResult = new PhaxioOperationResult(false, "No data received from service.");
             } else {
-                $opResult = new PhaxioOperationResult($result['success'], $result['message'], $result['data']);
+                $opResult = new PhaxioOperationResult($result['success'], $result['message'], isset($result['data']) ? $result['data'] : null);
 
                 if (isset($result['paging']) && $result['paging']){
                     $opResult->addPagingData($result['paging']);
@@ -226,7 +256,10 @@ class Phaxio
             throw new PhaxioException('Curl error: ' . curl_error($handle));
         }
 
-        return $result;
+        $contentType = curl_getinfo($handle, CURLINFO_CONTENT_TYPE);
+        $status= curl_getinfo($handle, CURLINFO_HTTP_CODE);
+
+        return array('status' => $status, 'contentType' => $contentType, 'body' => $result);
     }
 
     private function paramsCopy($names, $options, &$params)

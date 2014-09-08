@@ -1,0 +1,4 @@
+=== 1.0.1 2014-09-08
+
+* faxFile operation is now supported via the download() function
+* fix for #2
