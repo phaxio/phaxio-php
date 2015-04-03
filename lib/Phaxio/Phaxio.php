@@ -55,6 +55,15 @@ class Phaxio
         return $result;
     }
 
+    public function faxCancel($faxId) {
+        if (!$faxId) throw new PhaxioException("You must include a fax id. ");
+
+        $params = array('id' => $faxId);
+
+        $result = $this->doRequest($this->host . "faxCancel", $params);
+        return $result;
+    }
+
     public function faxList($startTimestamp, $endTimestamp, $options = array()){
         if (!$startTimestamp || !$endTimestamp) {
             throw new PhaxioException("You must provide a start and end timestamp. ");
