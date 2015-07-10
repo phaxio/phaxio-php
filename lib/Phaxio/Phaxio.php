@@ -140,7 +140,7 @@ class Phaxio
         }
 
         $this->paramsCopy(
-            array('string_data', 'string_data_type', 'batch', 'batch_delay', 'batch_collision_avoidance', 'callback_url', 'caller_id', 'cancel_timeout','header_text'),
+            array('string_data', 'string_data_type', 'batch', 'batch_delay', 'batch_collision_avoidance', 'callback_url', 'caller_id', 'cancel_timeout','header_text', 'test_fail'),
             $options,
             $params
         );
