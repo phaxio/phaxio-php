@@ -22,6 +22,15 @@ class Phaxio
         }
     }
 
+    public function deleteFax($faxId, $filesOnly = false) {
+        if (!$faxId) throw new PhaxioException("You must include a fax id. ");
+
+        $params = array('id' => $faxId, 'files_only' => $filesOnly);
+
+        $result = $this->doRequest($this->host . "deleteFax", $params);
+        return $result;
+    }
+
     public function download($faxId, $fileType = null, $outfile = null){
         $params = array();
         $params['id'] = $faxId;
