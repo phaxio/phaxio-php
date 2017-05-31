@@ -7,7 +7,7 @@ $apiSecrets['test'] = '';
 $apiMode = 'live';
 $apiHost = 'https://api.phaxio.com/v1/';
 
-$toNumber = '8884732963';
+$toNumber = '+18884732963';
 $customCallback = 'http://localphaxio.com/test';
 
 $htmlData = <<<FAX
