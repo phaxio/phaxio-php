@@ -81,7 +81,7 @@ class Phaxio
         $params = array('start' => $startTimestamp, 'end' => $endTimestamp);
 
         $this->paramsCopy(
-            array('maxperpage', 'page', 'number'),
+            array('maxperpage', 'page', 'number', 'status'),
             $options,
             $params
         );
