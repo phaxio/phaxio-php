@@ -86,7 +86,7 @@ class Phaxio
             $params
         );
 
-        if (is_array($options['tags'])){
+        if (isset($options['tags']) && is_array($options['tags'])){
             foreach($options['tags'] as $name => $value){
                 $params["tag[$name]"] = $value;
             }
