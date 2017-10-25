@@ -2,7 +2,7 @@
 
 namespace Phaxio;
 
-class PhaxioOperationResult
+class OperationResult
 {
     private $message = null;
     private $success = false;
