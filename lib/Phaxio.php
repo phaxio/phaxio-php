@@ -35,9 +35,6 @@ class Phaxio
     {
         $address = $this->host . $path;
 
-        $params['api_key'] = $this->getApiKey();
-        $params['api_secret'] = $this->getApiSecret();
-
         if ($this->debug) {
             echo "Request address: \n\n $address?" . http_build_query($params) . "\n\n";
         }
@@ -72,7 +69,14 @@ class Phaxio
     private function curlPost($host, $params = array(), $async = false)
     {
         $handle = curl_init($host);
+
         curl_setopt($handle, CURLOPT_POST, true);
+
+        # Authentication
+        if ($this->debug) {
+            echo "Authentication: " . $this->getApiKey() . ':' . $this->getApiSecret() . "\n\n";
+        }
+        curl_setopt($handle, CURLOPT_USERPWD, $this->getApiKey() . ':' . $this->getApiSecret());
 
         if ($async) {
             curl_setopt($handle, CURLOPT_TIMEOUT, 1);
