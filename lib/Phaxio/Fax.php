@@ -61,4 +61,10 @@ class Fax implements \ArrayAccess
 
         return $this;
     }
+
+    public function cancel() {
+        $result = $this->phaxio->doRequest("POST", 'faxes/' . urlencode($this->id) . "/cancel");
+
+        return $result;
+    }
 }
