@@ -67,4 +67,10 @@ class Fax implements \ArrayAccess
 
         return $result;
     }
+
+    public function resend($params = array()) {
+        $result = $this->phaxio->doRequest("POST", 'faxes/' . urlencode($this->id) . "/resend", $params);
+
+        return new self($this->phaxio, $result->getData()['id']);
+    }
 }
