@@ -31,7 +31,7 @@ class Phaxio
         return $this->api_secret;
     }
 
-    public function doRequest($path, $params = array(), $wrapInPhaxioOperationResult = true)
+    public function doRequest($method, $path, $params = array(), $wrapInPhaxioOperationResult = true)
     {
         $address = $this->host . $path;
 
@@ -39,7 +39,7 @@ class Phaxio
             echo "Request address: \n\n $address?" . http_build_query($params) . "\n\n";
         }
 
-        $result = $this->curlPost($address, $params, false);
+        $result = $this->curlRequest($method, $address, $params, false);
 
         if ($this->debug) {
             echo "Response: \n\n";
@@ -66,11 +66,11 @@ class Phaxio
         }
     }
 
-    private function curlPost($host, $params = array(), $async = false)
+    private function curlRequest($method, $address, $params = array(), $async = false)
     {
-        $handle = curl_init($host);
+        $handle = curl_init($address);
 
-        curl_setopt($handle, CURLOPT_POST, true);
+        curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $method);
 
         # Authentication
         if ($this->debug) {
@@ -93,6 +93,8 @@ class Phaxio
 
         $contentType = curl_getinfo($handle, CURLINFO_CONTENT_TYPE);
         $status= curl_getinfo($handle, CURLINFO_HTTP_CODE);
+
+        curl_close($handle);
 
         return array('status' => $status, 'contentType' => $contentType, 'body' => $result);
     }
