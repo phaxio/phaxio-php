@@ -6,11 +6,11 @@ class Fax extends \ArrayObject
 {
     private $phaxio;
 
-    public function __construct($phaxio, $id = null)
+    public function __construct($phaxio, $data = array())
     {
         $this->setFlags(\ArrayObject::ARRAY_AS_PROPS);
         $this->phaxio = $phaxio;
-        $this->id = $id;
+        $this->exchangeArray($data);
     }
 
     public static function create($phaxio, $params) {
@@ -19,11 +19,11 @@ class Fax extends \ArrayObject
     }
 
     public static function retrieve($phaxio, $id) {
-        $fax = new self($phaxio, $id);
-        return $fax->get();
+        $fax = new self($phaxio, array('id' => $id));
+        return $fax->refresh();
     }
 
-    public function _create($params) {
+    private function _create($params) {
         if ($this->id) throw new PhaxioException("Fax #$id already created");
 
         $result = $this->phaxio->doRequest('POST', 'faxes', $params);
@@ -32,7 +32,7 @@ class Fax extends \ArrayObject
         return $this;
     }
 
-    public function get() {
+    public function refresh() {
         if (!$this->id) throw new PhaxioException("Must set ID before getting fax");
 
         $result = $this->phaxio->doRequest("GET", 'faxes/' . urlencode($this->id));

@@ -18,4 +18,8 @@ class Faxes
     public function retrieve($id) {
         return Fax::retrieve($this->phaxio, $id);
     }
+
+    public function getList($params = array()) {
+        return new FaxCollection($this->phaxio, $params);
+    }
 }
