@@ -2,36 +2,15 @@
 
 namespace Phaxio;
 
-class Fax implements \ArrayAccess
+class Fax extends \ArrayObject
 {
-    private $id;
-    private $data;
     private $phaxio;
 
     public function __construct($phaxio, $id = null)
     {
+        $this->setFlags(\ArrayObject::ARRAY_AS_PROPS);
         $this->phaxio = $phaxio;
         $this->id = $id;
-    }
-
-    public function offsetExists($offset) {
-        return isset($this->data[$offset]);
-    }
-
-    public function offsetGet($offset) {
-        return isset($this->data[$offset]) ? $this->data[$offset] : null;
-    }
-
-    public function offsetSet($offset, $value) {
-        if (is_null($offset)) {
-            $this->data[] = $value;
-        } else {
-            $this->data[$offset] = $value;
-        }
-    }
-
-    public function offsetUnset($offset) {
-        unset($this->data[$offset]);
     }
 
     public static function create($phaxio, $params) {
@@ -57,7 +36,7 @@ class Fax implements \ArrayAccess
         if (!$this->id) throw new PhaxioException("Must set ID before getting fax");
 
         $result = $this->phaxio->doRequest("GET", 'faxes/' . urlencode($this->id));
-        $this->data = $result->getData();
+        $this->exchangeArray($result->getData());
 
         return $this;
     }
