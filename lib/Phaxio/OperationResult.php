@@ -14,11 +14,11 @@ class OperationResult
         $this->success = $success;
         $this->message = $message;
 
-        if ($data != null) {
+        if ($data !== null) {
             $this->data = $data;
         }
 
-        if ($paging != null) {
+        if ($paging !== null) {
             $this->paging = $paging;
         }
     }

@@ -33,7 +33,7 @@ class Fax extends \ArrayObject
     }
 
     public function refresh() {
-        if (!$this->id) throw new PhaxioException("Must set ID before getting fax");
+        if (!isset($this->id)) throw new PhaxioException("Must set ID before getting fax");
 
         $result = $this->phaxio->doRequest("GET", 'faxes/' . urlencode($this->id));
         $this->exchangeArray($result->getData());

@@ -21,6 +21,11 @@ class Phaxio
         return new Phaxio\Faxes($this);
     }
 
+    public function phoneNumbers()
+    {
+        return new Phaxio\PhoneNumbers($this);
+    }
+
     public function getApiKey()
     {
         return $this->api_key;
