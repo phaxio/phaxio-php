@@ -53,11 +53,7 @@ class Phaxio
             if (! $result) {
                 $opResult = new Phaxio\OperationResult(false, "No data received from service.");
             } else {
-                $opResult = new Phaxio\OperationResult($result['success'], $result['message'], isset($result['data']) ? $result['data'] : null);
-
-                if (isset($result['paging']) && $result['paging']){
-                    $opResult->addPagingData($result['paging']);
-                }
+                $opResult = new Phaxio\OperationResult($result['success'], $result['message'], isset($result['data']) ? $result['data'] : null, isset($result['paging']) ? $result['paging'] : null);
             }
 
             return $opResult;

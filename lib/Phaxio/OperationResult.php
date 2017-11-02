@@ -7,9 +7,9 @@ class OperationResult
     private $message = null;
     private $success = false;
     private $data = null;
-    private $pagingData = null;
+    private $paging = null;
 
-    public function __construct($success, $message = null, $data = null)
+    public function __construct($success, $message = null, $data = null, $paging = null)
     {
         $this->success = $success;
         $this->message = $message;
@@ -17,46 +17,18 @@ class OperationResult
         if ($data != null) {
             $this->data = $data;
         }
+
+        if ($paging != null) {
+            $this->paging = $paging;
+        }
     }
 
-    public function addPagingData(array $pagingData){
-        $this->pagingData = $pagingData;
-    }
-
-    public function isPaged(){
-        return $this->pagingData != null;
-    }
-
-    public function getPage(){
-        if (!$this->isPaged()){
+    public function getPaging(){
+        if (!isset($this->paging)){
             throw Exception("This API result has no paging information");
         }
 
-        return $this->pagingData['page'];
-    }
-
-    public function getTotalPages(){
-        if (!$this->isPaged()){
-            throw Exception("This API result has no paging information");
-        }
-
-        return $this->pagingData['total_pages'];
-    }
-
-    public function getMaxPerPage(){
-        if (!$this->isPaged()){
-            throw Exception("This API result has no paging information");
-        }
-
-        return $this->pagingData['max_per_page'];
-    }
-
-    public function getTotalResults(){
-        if (!$this->isPaged()){
-            throw Exception("This API result has no paging information");
-        }
-
-        return $this->pagingData['total_results'];
+        return $this->paging;
     }
 
     public function succeeded()
