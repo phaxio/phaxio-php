@@ -24,7 +24,7 @@ class Fax extends \ArrayObject
     }
 
     private function _create($params) {
-        if ($this->id) throw new PhaxioException("Fax #$id already created");
+        if (isset($this->id)) throw new PhaxioException("Fax #{$this->id} already created");
 
         $result = $this->phaxio->doRequest('POST', 'faxes', $params);
         $this->id = $result->getData()['id'];

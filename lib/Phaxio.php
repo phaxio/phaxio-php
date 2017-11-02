@@ -35,10 +35,6 @@ class Phaxio
     {
         $address = $this->host . $path;
 
-        if ($this->debug) {
-            echo "Request address: \n\n $address?" . http_build_query($params) . "\n\n";
-        }
-
         $result = $this->curlRequest($method, $address, $params, false);
 
         if ($this->debug) {
@@ -69,10 +65,12 @@ class Phaxio
         curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $method);
 
         # Authentication
+        curl_setopt($handle, CURLOPT_USERPWD, $this->getApiKey() . ':' . $this->getApiSecret());
+
         if ($this->debug) {
+            echo "Requested resource: $method $address\n\n";
             echo "Authentication: " . $this->getApiKey() . ':' . $this->getApiSecret() . "\n\n";
         }
-        curl_setopt($handle, CURLOPT_USERPWD, $this->getApiKey() . ':' . $this->getApiSecret());
 
         if ($async) {
             curl_setopt($handle, CURLOPT_TIMEOUT, 1);
@@ -118,8 +116,8 @@ class Phaxio
         $fields = array();
         foreach ($postfields as $key => $value) {
             if (is_array($value)) {
-                foreach ($value as $v) {
-                    $fields[] = array($key, $v);
+                foreach ($value as $idx => $v) {
+                    $fields[] = array($key . "[" . (is_int($idx) ? '' : $idx) . "]", $v);
                 }
             } else {
                 $fields[] = array($key, $value);
@@ -157,6 +155,10 @@ class Phaxio
                 'Content-Type: ' . $contentType,
             )
         );
+
+        if ($this->debug) {
+            echo "Request payload:\n\n$content\n\n";
+        }
 
         curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
     }
