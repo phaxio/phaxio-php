@@ -2,7 +2,7 @@
 
 namespace Phaxio;
 
-class PhoneNumbers extends Resources
+class PhoneNumbers extends AbstractResources
 {
     protected $collection_class = 'PhoneNumberCollection';
 

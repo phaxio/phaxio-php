@@ -2,7 +2,7 @@
 
 namespace Phaxio;
 
-class Resources
+abstract class AbstractResources
 {
     protected $phaxio;
     protected $collection_class;

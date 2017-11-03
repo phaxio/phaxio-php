@@ -2,7 +2,7 @@
 
 namespace Phaxio\PhaxioPublic;
 
-class AreaCodes extends \Phaxio\Resources
+class AreaCodes extends \Phaxio\AbstractResources
 {
     protected $collection_class = 'PhaxioPublic\\AreaCodeCollection';
 }

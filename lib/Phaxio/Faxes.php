@@ -2,7 +2,7 @@
 
 namespace Phaxio;
 
-class Faxes extends Resources
+class Faxes extends AbstractResources
 {
     protected $collection_class = 'FaxCollection';
 

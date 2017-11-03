@@ -2,7 +2,7 @@
 
 namespace Phaxio;
 
-class ResourceCollection extends \ArrayObject
+abstract class AbstractResourceCollection extends \ArrayObject
 {
     protected $phaxio;
     protected $resource;
