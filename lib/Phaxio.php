@@ -26,6 +26,10 @@ class Phaxio
         return new Phaxio\PhoneNumbers($this);
     }
 
+    public function public() {
+        return new Phaxio\PhaxioPublic($this);
+    }
+
     public function getApiKey()
     {
         return $this->api_key;
@@ -142,7 +146,7 @@ class Phaxio
                 $body[] = '--' . $boundary;
                 $body[] = 'Content-Disposition: form-data; name="' . $key . '"';
                 $body[] = '';
-                $body[] = $value;
+                $body[] = (is_bool($value) ? var_export($value, true) : $value);
             }
         }
         $body[] = '--' . $boundary . '--';
