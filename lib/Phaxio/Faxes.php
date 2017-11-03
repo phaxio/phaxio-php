@@ -2,14 +2,9 @@
 
 namespace Phaxio;
 
-class Faxes
+class Faxes extends Resources
 {
-    private $phaxio;
-
-    public function __construct($phaxio)
-    {
-        $this->phaxio = $phaxio;
-    }
+    protected $collection_class = 'FaxCollection';
 
     public function create($params) {
         return Fax::create($this->phaxio, $params);
@@ -17,9 +12,5 @@ class Faxes
 
     public function retrieve($id) {
         return Fax::retrieve($this->phaxio, $id);
-    }
-
-    public function getList($params = array()) {
-        return new FaxCollection($this->phaxio, $params);
     }
 }

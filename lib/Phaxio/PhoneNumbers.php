@@ -2,14 +2,9 @@
 
 namespace Phaxio;
 
-class PhoneNumbers
+class PhoneNumbers extends Resources
 {
-    private $phaxio;
-
-    public function __construct($phaxio)
-    {
-        $this->phaxio = $phaxio;
-    }
+    protected $collection_class = 'PhoneNumberCollection';
 
     public function create($params) {
         return PhoneNumber::create($this->phaxio, $params);
@@ -17,9 +12,5 @@ class PhoneNumbers
 
     public function retrieve($phone_number) {
         return PhoneNumber::retrieve($this->phaxio, $phone_number);
-    }
-
-    public function getList($params = array()) {
-        return new PhoneNumberCollection($this->phaxio, $params);
     }
 }
