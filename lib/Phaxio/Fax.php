@@ -52,4 +52,8 @@ class Fax extends \ArrayObject
 
         return new self($this->phaxio, $result->getData()['id']);
     }
+
+    public function getFile($params = array()) {
+        return new Fax\File($this->phaxio, $this->id, $params);
+    }
 }
