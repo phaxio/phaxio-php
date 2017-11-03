@@ -14,4 +14,8 @@ class PhaxioPublic
     public function areaCodes() {
         return new PhaxioPublic\AreaCodes($this->phaxio);
     }
+
+    public function countries() {
+        return new PhaxioPublic\Countries($this->phaxio);
+    }
 }
