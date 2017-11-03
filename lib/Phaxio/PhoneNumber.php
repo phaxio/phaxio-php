@@ -2,25 +2,16 @@
 
 namespace Phaxio;
 
-class PhoneNumber extends \ArrayObject
+class PhoneNumber extends AbstractResource
 {
-    private $phaxio;
-
-    public function __construct($phaxio, $data = array())
-    {
-        $this->setFlags(\ArrayObject::ARRAY_AS_PROPS);
-        $this->phaxio = $phaxio;
-        $this->exchangeArray($data);
-    }
-
     public static function create($phaxio, $params) {
-        $fax = new self($phaxio);
-        return $fax->_create($params);
+        $new_phone_number = new self($phaxio);
+        return $new_phone_number->_create($params);
     }
 
     public static function retrieve($phaxio, $phone_number) {
-        $fax = new self($phaxio, array('phone_number' => $phone_number));
-        return $fax->refresh();
+        $new_phone_number = new self($phaxio, array('phone_number' => $phone_number));
+        return $new_phone_number->refresh();
     }
 
     private function _create($params) {

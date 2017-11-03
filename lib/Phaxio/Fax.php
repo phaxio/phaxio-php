@@ -2,17 +2,8 @@
 
 namespace Phaxio;
 
-class Fax extends \ArrayObject
+class Fax extends AbstractResource
 {
-    private $phaxio;
-
-    public function __construct($phaxio, $data = array())
-    {
-        $this->setFlags(\ArrayObject::ARRAY_AS_PROPS);
-        $this->phaxio = $phaxio;
-        $this->exchangeArray($data);
-    }
-
     public static function create($phaxio, $params) {
         $fax = new self($phaxio);
         return $fax->_create($params);
