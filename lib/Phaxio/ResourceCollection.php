@@ -4,7 +4,7 @@ namespace Phaxio;
 
 class ResourceCollection extends \ArrayObject
 {
-    private $phaxio;
+    protected $phaxio;
     protected $resource;
     protected $resource_class;
     private $params;

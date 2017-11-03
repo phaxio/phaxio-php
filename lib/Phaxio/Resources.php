@@ -4,7 +4,7 @@ namespace Phaxio;
 
 class Resources
 {
-    private $phaxio;
+    protected $phaxio;
     protected $collection_class;
 
     public function __construct($phaxio)
