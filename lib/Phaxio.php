@@ -26,7 +26,18 @@ class Phaxio
         return new Phaxio\PhoneNumbers($this);
     }
 
-    public function public() {
+    public function retrieveDefaultphaxCode()
+    {
+        return Phaxio\PhaxCode::retrieve($this);
+    }
+
+    public function phaxCodes()
+    {
+        return new Phaxio\PhaxCodes($this);
+    }
+
+    public function public()
+    {
         return new Phaxio\PhaxioPublic($this);
     }
 
