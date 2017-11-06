@@ -41,6 +41,10 @@ class Phaxio
         return new Phaxio\PhaxioPublic($this);
     }
 
+    public function account() {
+        return new Phaxio\Account($this);
+    }
+
     public function getApiKey()
     {
         return $this->api_key;
