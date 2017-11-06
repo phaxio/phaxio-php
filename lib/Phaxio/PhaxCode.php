@@ -23,14 +23,25 @@ class PhaxCode extends AbstractResource
         return $this;
     }
 
-    public function refresh() {
+    public function getBarcode() {
+        $this->refresh(".png");
+        return $this->bytes;
+    }
+
+    public function refresh($getBarcode = false) {
+        $format = ($getBarcode ? ".png" : ".json");
+
         if ($this->identifier === null) {
-            $result = $this->phaxio->doRequest("GET", 'phax_code');
+            $result = $this->phaxio->doRequest("GET", 'phax_code' . $format, array(), !$getBarcode);
         } else {
-            $result = $this->phaxio->doRequest("GET", 'phax_codes/' . urlencode($this->identifier));
+            $result = $this->phaxio->doRequest("GET", 'phax_codes/' . urlencode($this->identifier) . $format, array(), !$getBarcode);
         }
 
-        $this->exchangeArray($result->getData());
+        if ($getBarcode) {
+            $this->bytes = $result['body'];
+        } else {
+            $this->exchangeArray($result->getData());
+        }
 
         return $this;
     }
