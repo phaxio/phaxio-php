@@ -9,9 +9,8 @@ class Fax extends AbstractResource
         return $fax->_create($params);
     }
 
-    public static function retrieve($phaxio, $id) {
-        $fax = new self($phaxio, array('id' => $id));
-        return $fax->refresh();
+    public static function init($phaxio, $id) {
+        return new self($phaxio, array('id' => $id));
     }
 
     private function _create($params) {
@@ -23,7 +22,7 @@ class Fax extends AbstractResource
         return $this;
     }
 
-    public function refresh() {
+    public function retrieve() {
         if (!isset($this->id)) throw new Exception("Must set ID before getting fax");
 
         $result = $this->phaxio->doRequest("GET", 'faxes/' . urlencode($this->id));
@@ -41,7 +40,7 @@ class Fax extends AbstractResource
     public function resend($params = array()) {
         $result = $this->phaxio->doRequest("POST", 'faxes/' . urlencode($this->id) . "/resend", $params);
 
-        return new self($this->phaxio, $result->getData()['id']);
+        return self::init($this->phaxio, $result->getData()['id']);
     }
 
     public function delete() {

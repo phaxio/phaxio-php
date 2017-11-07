@@ -10,7 +10,7 @@ class Faxes extends AbstractResources
         return Fax::create($this->phaxio, $params);
     }
 
-    public function retrieve($id) {
-        return Fax::retrieve($this->phaxio, $id);
+    public function init($id) {
+        return Fax::init($this->phaxio, $id);
     }
 }

@@ -2,7 +2,7 @@
 
 class Phaxio
 {
-    private $debug = false;
+    private $debug = true;
     private $api_key = null;
     private $api_secret = null;
     private $host = "https://api.phaxio.com/v2/";

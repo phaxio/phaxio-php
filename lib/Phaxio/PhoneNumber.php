@@ -5,13 +5,12 @@ namespace Phaxio;
 class PhoneNumber extends AbstractResource
 {
     public static function create($phaxio, $params) {
-        $new_phone_number = new self($phaxio);
-        return $new_phone_number->_create($params);
+        $phone_number = new self($phaxio);
+        return $phone_number->_create($params);
     }
 
-    public static function retrieve($phaxio, $phone_number) {
-        $new_phone_number = new self($phaxio, array('phone_number' => $phone_number));
-        return $new_phone_number->refresh();
+    public static function init($phaxio, $phone_number) {
+        return new self($phaxio, array('phone_number' => $phone_number));
     }
 
     private function _create($params) {
@@ -23,7 +22,7 @@ class PhoneNumber extends AbstractResource
         return $this;
     }
 
-    public function refresh() {
+    public function retrieve() {
         if (!isset($this->phone_number)) throw new Exception("Must set phone_number before getting PhoneNumber");
 
         $result = $this->phaxio->doRequest("GET", 'phone_numbers/' . urlencode($this->phone_number));
@@ -35,6 +34,6 @@ class PhoneNumber extends AbstractResource
     public function delete() {
         $result = $this->phaxio->doRequest("DELETE", 'phone_numbers/' . urlencode($this->phone_number));
 
-        return $result;
+        return true;
     }
 }

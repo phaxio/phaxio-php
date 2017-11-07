@@ -10,7 +10,7 @@ class PhoneNumbers extends AbstractResources
         return PhoneNumber::create($this->phaxio, $params);
     }
 
-    public function retrieve($phone_number) {
-        return PhoneNumber::retrieve($this->phaxio, $phone_number);
+    public function init($phone_number) {
+        return PhoneNumber::init($this->phaxio, $phone_number);
     }
 }
