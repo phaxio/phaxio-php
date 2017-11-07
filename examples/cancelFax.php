@@ -3,8 +3,10 @@
 require_once('phaxio_config.php');
 require_once('autoload.php');
 
-use Phaxio\Phaxio;
-
 $phaxio = new Phaxio($apiKeys[$apiMode], $apiSecrets[$apiMode], $apiHost);
-$result = $phaxio->sendFax($toNumber, array(), array('string_data' => $htmlData, 'string_data_type' => 'html'));
+
+# Fax must not be completed
+$faxId = 48554;
+
+$result = $phaxio->initFax($faxId)->cancel();
 var_dump($result);

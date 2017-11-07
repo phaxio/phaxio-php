@@ -2,7 +2,7 @@
 
 class Phaxio
 {
-    private $debug = true;
+    private $debug = false;
     private $api_key = null;
     private $api_secret = null;
     private $host = "https://api.phaxio.com/v2/";
@@ -15,7 +15,7 @@ class Phaxio
             $this->host = $host;
         }
     }
-    
+
     public function faxes()
     {
         return new Phaxio\Faxes($this);
@@ -24,11 +24,6 @@ class Phaxio
     public function phoneNumbers()
     {
         return new Phaxio\PhoneNumbers($this);
-    }
-
-    public function retrieveDefaultPhaxCode($getMetadata = false)
-    {
-        return Phaxio\PhaxCode::init($this)->retrieve($getMetadata);
     }
 
     public function phaxCodes()
@@ -44,6 +39,31 @@ class Phaxio
     public function account() {
         return new Phaxio\Account($this);
     }
+
+    # Convenience methods
+
+    public function sendFax($params) {
+        return $this->faxes()->create($params);
+    }
+
+    public function initFax($id) {
+        return $this->faxes()->init($id);
+    }
+
+    public function retriveFaxFile($id, $params = array()) {
+        return $this->initFax($id)->getFile()->retrieve($params);
+    }
+
+    public function listFaxes($params = array()) {
+        return $this->faxes()->getList($params);
+    }
+
+    public function retrieveDefaultPhaxCode($getMetadata = false)
+    {
+        return Phaxio\PhaxCode::init($this)->retrieve($getMetadata);
+    }
+
+    # API client methods
 
     public function getApiKey()
     {

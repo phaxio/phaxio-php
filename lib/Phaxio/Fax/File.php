@@ -11,7 +11,6 @@ class File extends \ArrayObject
         $this->setFlags(\ArrayObject::ARRAY_AS_PROPS);
         $this->phaxio = $phaxio;
         $this->fax_id = $fax_id;
-        $this->params = $params;
     }
 
     public function delete() {
