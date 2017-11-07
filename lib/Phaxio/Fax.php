@@ -35,13 +35,19 @@ class Fax extends AbstractResource
     public function cancel() {
         $result = $this->phaxio->doRequest("POST", 'faxes/' . urlencode($this->id) . "/cancel");
 
-        return $result;
+        return true;
     }
 
     public function resend($params = array()) {
         $result = $this->phaxio->doRequest("POST", 'faxes/' . urlencode($this->id) . "/resend", $params);
 
         return new self($this->phaxio, $result->getData()['id']);
+    }
+
+    public function delete() {
+        $result = $this->phaxio->doRequest("DELETE", 'faxes/' . urlencode($this->id));
+
+        return true;
     }
 
     public function getFile($params = array()) {
