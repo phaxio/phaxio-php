@@ -11,7 +11,7 @@ class Account
         $this->phaxio = $phaxio;
     }
 
-    public function status() {
-        return Account\Status::retrieve($this->phaxio);
+    public function getStatus() {
+        return Account\Status::init($this->phaxio);
     }
 }

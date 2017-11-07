@@ -4,12 +4,11 @@ namespace Phaxio\Account;
 
 class Status extends \Phaxio\AbstractResource
 {
-    public static function retrieve($phaxio) {
-        $phax_code = new self($phaxio);
-        return $phax_code->refresh();
+    public static function init($phaxio) {
+        return new self($phaxio);
     }
 
-    public function refresh() {
+    public function retrieve() {
         $result = $this->phaxio->doRequest("GET", 'account/status');
         $this->exchangeArray($result->getData());
 
