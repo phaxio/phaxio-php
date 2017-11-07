@@ -2,7 +2,7 @@
 
 class Phaxio
 {
-    private $debug = true;
+    private $debug = false;
     private $api_key = null;
     private $api_secret = null;
     private $host = "https://api.phaxio.com/v2/";
@@ -59,27 +59,44 @@ class Phaxio
     {
         $address = $this->host . $path;
 
-        $result = $this->curlRequest($method, $address, $params, false);
+        $response = $this->curlRequest($method, $address, $params, false);
 
         if ($this->debug) {
             echo "Response: \n\n";
-            var_dump($result);
+            var_dump($response);
             echo "\n\n";
         }
 
-        if ($wrapInPhaxioOperationResult) {
-            $result = json_decode($result['body'], true);
-
-            if (! $result) {
-                $opResult = new Phaxio\OperationResult(false, "No data received from service.");
-            } else {
-                $opResult = new Phaxio\OperationResult($result['success'], $result['message'], isset($result['data']) ? $result['data'] : null, isset($result['paging']) ? $result['paging'] : null);
-            }
-
-            return $opResult;
-        } else {
-            return $result;
+        if ($wrapInPhaxioOperationResult || $response['status'] != 200) {
+            $result = json_decode($response['body'], true);
         }
+
+        switch ($response['status']) {
+            case 401:
+                throw new Phaxio\Error\AuthenticationException($result['message']);
+                break;
+            case 404:
+                throw new Phaxio\Error\NotFoundException($result['message']);
+                break;
+            case 422:
+                throw new Phaxio\Error\InvalidRequestException($result['message']);
+                break;
+            case 429:
+                throw new Phaxio\Error\RateLimitException($result['message']);
+                break;
+        }
+
+        if ($response['status'] >= 500 || (isset($result['success']) && $result['success'] != true)) {
+            throw new Phaxio\Error\GeneralException($result['message']);
+        }
+
+        if ($wrapInPhaxioOperationResult) {
+            $opResult = new Phaxio\OperationResult($result['success'], $result['message'], isset($result['data']) ? $result['data'] : null, isset($result['paging']) ? $result['paging'] : null);
+        } else {
+            $opResult = $response;
+        }
+
+        return $opResult;
     }
 
     private function curlRequest($method, $address, $params = array(), $async = false)
@@ -106,11 +123,11 @@ class Phaxio
         $result = curl_exec($handle);
 
         if ($result === false) {
-            throw new PhaxioException('Curl error: ' . curl_error($handle));
+            throw new Phaxio\Error\APIConnectionException('Curl error: ' . curl_error($handle));
         }
 
         $contentType = curl_getinfo($handle, CURLINFO_CONTENT_TYPE);
-        $status= curl_getinfo($handle, CURLINFO_HTTP_CODE);
+        $status = curl_getinfo($handle, CURLINFO_HTTP_CODE);
 
         curl_close($handle);
 

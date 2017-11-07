@@ -15,7 +15,7 @@ class PhoneNumber extends AbstractResource
     }
 
     private function _create($params) {
-        if (isset($this->phone_number)) throw new PhaxioException("PhoneNumber #{$this->phone_number} already created");
+        if (isset($this->phone_number)) throw new Exception("PhoneNumber #{$this->phone_number} already created");
 
         $result = $this->phaxio->doRequest('POST', 'phone_numbers', $params);
         $this->phone_number = $result->getData()['phone_number'];
@@ -24,7 +24,7 @@ class PhoneNumber extends AbstractResource
     }
 
     public function refresh() {
-        if (!isset($this->phone_number)) throw new PhaxioException("Must set phone_number before getting PhoneNumber");
+        if (!isset($this->phone_number)) throw new Exception("Must set phone_number before getting PhoneNumber");
 
         $result = $this->phaxio->doRequest("GET", 'phone_numbers/' . urlencode($this->phone_number));
         $this->exchangeArray($result->getData());

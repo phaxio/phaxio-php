@@ -15,7 +15,7 @@ class Fax extends AbstractResource
     }
 
     private function _create($params) {
-        if (isset($this->id)) throw new PhaxioException("Fax #{$this->id} already created");
+        if (isset($this->id)) throw new Exception("Fax #{$this->id} already created");
 
         $result = $this->phaxio->doRequest('POST', 'faxes', $params);
         $this->id = $result->getData()['id'];
@@ -24,7 +24,7 @@ class Fax extends AbstractResource
     }
 
     public function refresh() {
-        if (!isset($this->id)) throw new PhaxioException("Must set ID before getting fax");
+        if (!isset($this->id)) throw new Exception("Must set ID before getting fax");
 
         $result = $this->phaxio->doRequest("GET", 'faxes/' . urlencode($this->id));
         $this->exchangeArray($result->getData());

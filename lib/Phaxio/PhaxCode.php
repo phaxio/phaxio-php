@@ -15,7 +15,7 @@ class PhaxCode extends AbstractResource
     }
 
     private function _create($params) {
-        if (isset($this->identifier)) throw new PhaxioException("PhaxCode #{$this->identifier} already created");
+        if (isset($this->identifier)) throw new Exception("PhaxCode #{$this->identifier} already created");
 
         $result = $this->phaxio->doRequest('POST', 'phax_codes', $params);
         $this->identifier = $result->getData()['identifier'];
