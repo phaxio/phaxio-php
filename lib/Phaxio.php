@@ -26,9 +26,9 @@ class Phaxio
         return new Phaxio\PhoneNumbers($this);
     }
 
-    public function retrieveDefaultphaxCode()
+    public function retrieveDefaultPhaxCode($getMetadata = false)
     {
-        return Phaxio\PhaxCode::retrieve($this);
+        return Phaxio\PhaxCode::init($this)->retrieve($getMetadata);
     }
 
     public function phaxCodes()

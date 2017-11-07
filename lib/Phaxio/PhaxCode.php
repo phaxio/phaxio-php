@@ -9,9 +9,8 @@ class PhaxCode extends AbstractResource
         return $phax_code->_create($params);
     }
 
-    public static function retrieve($phaxio, $identifier = null) {
-        $phax_code = new self($phaxio, array('identifier' => $identifier));
-        return $phax_code->refresh();
+    public static function init($phaxio, $identifier = null) {
+        return new self($phaxio, array('identifier' => $identifier));
     }
 
     private function _create($params) {
@@ -23,24 +22,19 @@ class PhaxCode extends AbstractResource
         return $this;
     }
 
-    public function getBarcode() {
-        $this->refresh(".png");
-        return $this->bytes;
-    }
-
-    public function refresh($getBarcode = false) {
-        $format = ($getBarcode ? ".png" : ".json");
+    public function retrieve($getMetadata = false) {
+        $format = ($getMetadata ? ".json" : ".png");
 
         if ($this->identifier === null) {
-            $result = $this->phaxio->doRequest("GET", 'phax_code' . $format, array(), !$getBarcode);
+            $result = $this->phaxio->doRequest("GET", 'phax_code' . $format, array(), $getMetadata);
         } else {
-            $result = $this->phaxio->doRequest("GET", 'phax_codes/' . urlencode($this->identifier) . $format, array(), !$getBarcode);
+            $result = $this->phaxio->doRequest("GET", 'phax_codes/' . urlencode($this->identifier) . $format, array(), $getMetadata);
         }
 
-        if ($getBarcode) {
-            $this->bytes = $result['body'];
+        if ($getMetadata) {
+            $this->exchangeArray(array_merge($this->getArrayCopy(), $result->getData()));
         } else {
-            $this->exchangeArray($result->getData());
+            $this->exchangeArray(array_merge($this->getArrayCopy(), $result));
         }
 
         return $this;

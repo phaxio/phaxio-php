@@ -15,7 +15,7 @@ class PhaxCodes
         return PhaxCode::create($this->phaxio, $params);
     }
 
-    public function retrieve($identifier) {
-        return PhaxCode::retrieve($this->phaxio, $identifier);
+    public function init($identifier) {
+        return PhaxCode::init($this->phaxio, $identifier);
     }
 }
