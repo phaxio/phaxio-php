@@ -9,7 +9,7 @@ $params = array(
     'to' => $toNumber,
     'file' => array(
         $phaxio->stringUpload('Page 1'),
-        $phaxio->stringUpload('<b>Page 2<b>')
+        $phaxio->stringUpload('<b>Page 2<b>', 'html')
     )
 );
 
