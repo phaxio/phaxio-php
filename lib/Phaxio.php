@@ -196,7 +196,6 @@ class Phaxio
             }
 
             if ($value instanceof Phaxio\StringUpload) {
-                $filename = stream_get_meta_data($value)['uri'];
                 $body[] = '--' . $boundary;
                 $body[] = 'Content-Disposition: form-data; name="' . $key . '"; filename="string.' . $value->extension . '"';
                 $body[] = 'Content-Type: application/octet-stream';
