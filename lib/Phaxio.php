@@ -63,6 +63,10 @@ class Phaxio
         return Phaxio\PhaxCode::init($this)->retrieve($getMetadata);
     }
 
+    public function stringUpload($str, $ext = 'txt') {
+        return new Phaxio\StringUpload($str, $ext);
+    }
+
     # API client methods
 
     public function getApiKey()
@@ -186,13 +190,18 @@ class Phaxio
         }
         foreach ($fields as $field) {
             list($key, $value) = $field;
+
             if (is_resource($value)) {
+                $value = $this->stringUpload(stream_get_contents($value), basename(stream_get_meta_data($value)['uri']));
+            }
+
+            if ($value instanceof Phaxio\StringUpload) {
                 $filename = stream_get_meta_data($value)['uri'];
                 $body[] = '--' . $boundary;
-                $body[] = 'Content-Disposition: form-data; name="' . $key . '"; filename="' . basename($filename) . '"';
+                $body[] = 'Content-Disposition: form-data; name="' . $key . '"; filename="string.' . $value->extension . '"';
                 $body[] = 'Content-Type: application/octet-stream';
                 $body[] = '';
-                $body[] = stream_get_contents($value);
+                $body[] = $value->string;
             } else {
                 $body[] = '--' . $boundary;
                 $body[] = 'Content-Disposition: form-data; name="' . $key . '"';
