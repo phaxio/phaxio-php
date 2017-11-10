@@ -6,9 +6,9 @@ require_once('autoload.php');
 $params = array(
     'to' => $toNumber,
     'file' => array(
-        # Create files and put their names here prefixed with '@'
-        '@files/coverPage.html',
-        '@files/content.pdf'
+        # Use open file handles to upload files
+        fopen('files/coverPage.html', 'r'),
+        fopen('files/content.pdf', 'r')
     )
 );
 

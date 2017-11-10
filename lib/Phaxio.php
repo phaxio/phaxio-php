@@ -186,14 +186,13 @@ class Phaxio
         }
         foreach ($fields as $field) {
             list($key, $value) = $field;
-            if (strpos($value, '@') === 0) {
-                preg_match('/^@(.*?)$/', $value, $matches);
-                list($dummy, $filename) = $matches;
+            if (is_resource($value)) {
+                $filename = stream_get_meta_data($value)['uri'];
                 $body[] = '--' . $boundary;
                 $body[] = 'Content-Disposition: form-data; name="' . $key . '"; filename="' . basename($filename) . '"';
                 $body[] = 'Content-Type: application/octet-stream';
                 $body[] = '';
-                $body[] = file_get_contents($filename);
+                $body[] = stream_get_contents($value);
             } else {
                 $body[] = '--' . $boundary;
                 $body[] = 'Content-Disposition: form-data; name="' . $key . '"';
