@@ -83,7 +83,7 @@ class Phaxio
     {
         $address = $this->host . $path;
 
-        $response = $this->curlRequest($method, $address, $params, false);
+        $response = $this->curlRequest($method, $address, $params);
 
         if ($this->debug) {
             echo "Response: \n\n";
@@ -123,11 +123,12 @@ class Phaxio
         return $opResult;
     }
 
-    private function curlRequest($method, $address, $params = array(), $async = false)
+    private function curlRequest($method, $address, $params = array())
     {
         $handle = curl_init($address);
 
         curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
 
         # Authentication
         curl_setopt($handle, CURLOPT_USERPWD, $this->getApiKey() . ':' . $this->getApiSecret());
@@ -135,12 +136,6 @@ class Phaxio
         if ($this->debug) {
             echo "Requested resource: $method $address\n\n";
             echo "Authentication: " . $this->getApiKey() . ':' . $this->getApiSecret() . "\n\n";
-        }
-
-        if ($async) {
-            curl_setopt($handle, CURLOPT_TIMEOUT, 1);
-        } else {
-            curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
         }
 
         $this->curlSetoptCustomPostfields($handle, $params);
