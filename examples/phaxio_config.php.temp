@@ -5,7 +5,7 @@ $apiSecrets['live'] = '';
 $apiKeys['test'] = '';
 $apiSecrets['test'] = '';
 $apiMode = 'live';
-$apiHost = 'https://api.phaxio.com/v1/';
+$apiHost = 'https://api.phaxio.com/v2/';
 
 $toNumber = '+18884732963';
 $customCallback = 'http://localphaxio.com/test';
