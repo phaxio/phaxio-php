@@ -1,5 +1,6 @@
 === 2.0.1 2018-01-12
 
+* fixed bug in composer file
 * added example for using content_url param
 
 === 2.0.0 2017-12-04
